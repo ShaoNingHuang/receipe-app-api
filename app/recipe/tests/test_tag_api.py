@@ -11,21 +11,24 @@ from recipe.serializer import TagSerializer
 
 TAGS_URL = reverse('recipe:tag-list')
 
+
 def detail_url(id):
     return reverse('recipe:tag-detail', args=[id])
+
 
 class PublicTagAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-    
+
     def test_auth_required(self):
         res = self.client.get(TAGS_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-    
+
+
 class PrivateTagAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user=get_user_model().objects.create_user(
+        self.user = get_user_model().objects.create_user(
             email='test123@example.com',
             password='password123',
             name='test123'
@@ -49,13 +52,13 @@ class PrivateTagAPITest(TestCase):
         )
         Tag.objects.create(user=other_user, name='Tag1')
         tag = Tag.objects.create(user=self.user, name='Tag2')
-        
+
         res = self.client.get(TAGS_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['name'], tag.name)
         self.assertEqual(res.data[0]['id'], tag.id)
-    
+
     def test_update_tag(self):
         tag = Tag.objects.create(user=self.user, name='Tag1')
         payload = {'name': 'Tag 2'}
@@ -64,9 +67,10 @@ class PrivateTagAPITest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         tag.refresh_from_db()
         self.assertEqual(tag.name, payload['name'])
+
     def test_delete_tag(self):
         tag = Tag.objects.create(user=self.user, name='Tag1')
-        
+
         url = detail_url(tag.id)
 
         res = self.client.delete(url)
@@ -78,7 +82,7 @@ class PrivateTagAPITest(TestCase):
         tag2 = Tag.objects.create(user=self.user, name='Tag2')
 
         recipe = Recipe.objects.create(
-            user = self.user,
+            user=self.user,
             title='New Recipe',
             time_minutes=22,
             price=Decimal('5.25'),
@@ -92,12 +96,12 @@ class PrivateTagAPITest(TestCase):
         s2 = TagSerializer(tag2)
         self.assertIn(s1.data, res.data)
         self.assertNotIn(s2.data, res.data)
-    
+
     def test_filtered_tags_unique(self):
         tag1 = Tag.objects.create(user=self.user, name='Tag1')
 
         r1 = Recipe.objects.create(
-            user =self.user,
+            user=self.user,
             title='New Recipe',
             time_minutes=22,
             price=Decimal('5.25'),
@@ -106,7 +110,7 @@ class PrivateTagAPITest(TestCase):
         )
 
         r2 = Recipe.objects.create(
-            user =self.user,
+            user=self.user,
             title='Other Recipe',
             time_minutes=22,
             price=Decimal('5.25'),
@@ -118,4 +122,4 @@ class PrivateTagAPITest(TestCase):
         res = self.client.get(TAGS_URL, {'assigned_only': 1})
         self.assertEqual(len(res.data), 1)
         s1 = TagSerializer(tag1)
-        self.assertIn(s1.data,res.data)
+        self.assertIn(s1.data, res.data)

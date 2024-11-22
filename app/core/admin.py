@@ -3,6 +3,7 @@ from .models import User, Recipe, Tag, Ingredient
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
+
 class UserAdmin(BaseUserAdmin):
     ordering = ['id']
     list_display = ['email', 'name']
@@ -12,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
         (
             _('Permission'),
             {
-                'fields':(
+                'fields': (
                     'is_active',
                     'is_staff',
                     'is_superuser',
@@ -20,15 +21,15 @@ class UserAdmin(BaseUserAdmin):
             }
         ),
         (
-            _('Important dates'), {'fields': ('last_login',),}
+            _('Important dates'), {'fields': ('last_login',), }
         )
     )
     readonly_fields = ['last_login']
-    
+
     add_fieldsets = (
         (None, {
-            'classes':('wide',),
-            'fields':(
+            'classes': ('wide',),
+            'fields': (
                 'email',
                 'password1',
                 'password2',

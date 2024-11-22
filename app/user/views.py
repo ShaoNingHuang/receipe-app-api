@@ -10,7 +10,7 @@ class CreateUserView(generics.CreateAPIView):
 
     This endpoint allows anonymous users to register by providing
     necessary user information (e.g., email, password).
-    
+
     Serializer: UserSerializer
     """
     serializer_class = UserSerializer
@@ -22,7 +22,7 @@ class CreateTokenView(ObtainAuthToken):
 
     This endpoint allows users to obtain an authentication token
     by providing valid credentials (email and password).
-    
+
     Serializer: AuthTokenSerializer
     Renderer Classes: Configured from the default renderer classes.
     """

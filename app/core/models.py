@@ -9,10 +9,11 @@ from django.conf import settings
 import uuid
 import os
 
+
 def recipe_image_file_path(isntance, filename):
     ext = os.path.splitext(filename)[1]
     filename = f"{uuid.uuid4()}{ext}"
-    return os.path.join('uploads','recipe', filename)
+    return os.path.join('uploads', 'recipe', filename)
 
 
 class UserManager(BaseUserManager):
@@ -24,7 +25,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
+
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
         user.is_staff = True
@@ -44,7 +45,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
 
-
 class Recipe(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -58,8 +58,10 @@ class Recipe(models.Model):
     tags = models.ManyToManyField('Tag')
     ingredients = models.ManyToManyField('Ingredient')
     image = models.ImageField(null=True, upload_to=recipe_image_file_path)
+
     def __str__(self):
         return self.title
+
 
 class Tag(models.Model):
     user = models.ForeignKey(
@@ -70,6 +72,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Ingredient(models.Model):
     user = models.ForeignKey(

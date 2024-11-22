@@ -14,6 +14,7 @@ from drf_spectacular.utils import (
 from core.models import Recipe, Tag, Ingredient
 from . import serializer
 
+
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -27,7 +28,7 @@ from . import serializer
                 OpenApiTypes.STR,
                 description='Comma separated list of IDs to filter'
             ),
-        ]   
+        ]
     )
 )
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -37,7 +38,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     - Provides CRUD operations for recipes.
     - Supports listing, creating, retrieving, updating, and deleting recipes.
     - Allows uploading an image for a specific recipe via a custom action.
-    
+
     Serializer:
     - Default: RecipeDetailSerializer
     - List: RecipeSerializer
@@ -54,7 +55,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def _params_to_ints(self, qs):
         return [int(q) for q in qs.split(',')]
 
-
     def get_queryset(self):
         """
         Return recipes for the authenticated user, ordered by most recent.
@@ -69,8 +69,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(tags__id__in=tag_id)
         if ingredients:
             ingre_id = self._params_to_ints(ingredients)
-            queryset =queryset.filter(ingredients__id__in=ingre_id)
-        return queryset.filter(user=self.request.user).order_by('-id').distinct()
+            queryset = queryset.filter(ingredients__id__in=ingre_id)
+        return queryset.filter(
+            user=self.request.user).order_by('-id').distinct()
 
     def get_serializer_class(self):
         """
@@ -108,6 +109,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -116,8 +118,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 OpenApiTypes.INT, enum=[0, 1],
                 description='Filter by items assigned to recipes'
             ),
-        
-        ]   
+
+        ]
     )
 )
 class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
@@ -141,12 +143,14 @@ class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
         """
         Return attributes for the authenticated user, ordered by name.
         """
-        is_assigned_only = bool(int(self.request.query_params.get('assigned_only', 0)))
+        is_assigned_only = bool(
+            int(self.request.query_params.get('assigned_only', 0)))
         queryset = self.queryset
         if is_assigned_only:
             queryset = queryset.filter(recipe__isnull=False)
 
-        return queryset.filter(user=self.request.user).order_by('-name').distinct()
+        return queryset.filter(
+            user=self.request.user).order_by('-name').distinct()
 
 
 class TagViewSet(BaseRecipeAttrViewSet):
