@@ -5,7 +5,11 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from core.models import Recipe, Tag, Ingredient
-from recipe.serializer import RecipeSerializer, RecipeDetailSerializer, TagSerializer
+from recipe.serializer import(
+        RecipeSerializer,
+        RecipeDetailSerializer
+)
+
 import tempfile
 import os
 
@@ -109,13 +113,11 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_partial_update(self):
 
-        original_link = 'http://example.com/recipe.pdf'
         recipe = create_recipe(self.user)
         new_link = 'http://new_example.com/recipe.pdf'
         url = detail_url(recipe.id)
         res = self.client.patch(url, {'link': new_link})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        serializer = RecipeDetailSerializer(res.data)
         self.assertEqual(res.data['link'], new_link)
 
     def test_delete_recipe(self):

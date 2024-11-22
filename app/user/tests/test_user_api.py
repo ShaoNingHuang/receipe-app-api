@@ -19,7 +19,7 @@ def create_user(**params):
 
 class PublicAPITests(TestCase):
     def setUp(self):
-        client = APIClient()
+        self.client = APIClient()
 
     def test_create_user_success(self):
         payload = {

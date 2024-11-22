@@ -41,7 +41,7 @@ class PrivateIngredientAPITest(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_retrieve_ingredient_list(self):
-        ingredient = Ingredient.objects.create(
+        Ingredient.objects.create(
             user=self.user,
             name="New Ingredient"
         )
