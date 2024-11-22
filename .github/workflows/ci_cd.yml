@@ -35,8 +35,8 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
-          git clone git@github.com:ShaoNingHuang/receipe-app-api.git
-          cd /receipe-app-api
+          cd receipe-app-api
+          git pull origin main
           docker-compose -f docker-compose-deploy.yml down
           docker-compose -f docker-compose-deploy.yml up -d --build
           EOF
