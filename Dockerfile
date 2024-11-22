@@ -1,7 +1,7 @@
 FROM python:3.9-alpine3.13
 LABEL maintainer="Sonny"
 
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED 1
 
 COPY ./requirement.txt /tmp/requirement.txt
 COPY ./requirement.dev.txt /tmp/requirement.dev.txt
